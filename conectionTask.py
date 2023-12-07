@@ -1,8 +1,30 @@
 import psycopg2
+from tkinter import Tk, Canvas, Frame, Label, Entry
+
+root = Tk()
+root.title("Lista de tareas")
+
+#Canvas
+canvas = Canvas(root, height=380, width=400)
+canvas.pack()
+frame = Frame()
+frame.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.8)
+
+label = Label(frame, text='Add new task')
+label.grid(row=0, column=1)
+
+label = Label(frame, text='Title')
+label.grid(row=1, column=0)
+entry_name = Entry(frame)
+entry_name.grid(row=1, column=1)
+
+root.mainloop()
+
+
 
 host = "localhost"
 user = "postgres"
-password = ""
+password = "postnew"
 database = "tareas"
 port = 5432
 
