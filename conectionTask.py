@@ -1,8 +1,13 @@
 import psycopg2
-from tkinter import Tk, Canvas, Frame, Label, Entry
+from tkinter import Tk, Canvas, Frame, Label, Entry, Button, W, E
 
 root = Tk()
 root.title("Lista de tareas")
+
+def save_new_student(title, description, status):
+    print(title)
+    print(description)
+    print(status)
 
 #Canvas
 canvas = Canvas(root, height=380, width=400)
@@ -15,11 +20,27 @@ label.grid(row=0, column=1)
 
 label = Label(frame, text='Title')
 label.grid(row=1, column=0)
-entry_name = Entry(frame)
-entry_name.grid(row=1, column=1)
+entry_title = Entry(frame)
+entry_title.grid(row=1, column=1)
+
+label = Label(frame, text='Description')
+label.grid(row=2, column=0)
+entry_description = Entry(frame)
+entry_description.grid(row=2, column=1)
+
+label = Label(frame, text='Status')
+label.grid(row=3, column=0)
+entry_status = Entry(frame)
+entry_status.grid(row=3, column=1)
+
+button = Button(frame, text='Add', command=lambda:save_new_student(
+    entry_title.get(),
+    entry_description.get(),
+    entry_status.get()
+))
+button.grid(row=5, column=1, sticky=W+E)
 
 root.mainloop()
-
 
 
 host = "localhost"
