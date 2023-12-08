@@ -1,19 +1,68 @@
 import psycopg2
-from tkinter import Tk, Canvas, Frame, Label, Entry, Button, W, E
+from tkinter import Tk, Canvas, Frame, Label, Entry, Button, W, E, Listbox, END
 
 root = Tk()
 root.title("Lista de tareas")
 
+host = "localhost"
+user = "postgres"
+password = "postnew"
+database = "tareas"
+port = 5432
+
+
 def save_new_student(title, description, status):
-    print(title)
-    print(description)
-    print(status)
+
+    connection = psycopg2.connect(
+    host = host,
+    user = user,
+    password = password,
+    database = database,
+    port = port
+    )
+
+    cur = connection.cursor()
+    query = '''INSERT INTO lista(title, description, status) VALUES (%s, %s, %s)'''
+    cur.execute(query, (title, description, status))
+    print('Data Saved')
+    connection.commit()
+    connection.close()
+    display_students()
+
+def display_students(): 
+        connection = psycopg2.connect(
+        host = host,
+        user = user,
+        password = password,
+        database = database,
+        port = port
+        )
+
+        cur = connection.cursor()
+        query = '''SELECT * FROM lista'''
+        cur.execute(query)
+
+        row = cur.fetchall()
+        
+        listbox = Listbox(frame, width=90, height=10)
+        listbox.grid(row=10, columnspan=5, sticky=W+E)
+        
+        for x in row: 
+             listbox.insert(END, x)
+
+        connection.commit()
+        connection.close()
+
+        # Refresh with new Task 
+        
+
 
 #Canvas
 canvas = Canvas(root, height=380, width=400)
 canvas.pack()
 frame = Frame()
 frame.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.8)
+
 
 label = Label(frame, text='Add new task')
 label.grid(row=0, column=1)
@@ -40,53 +89,8 @@ button = Button(frame, text='Add', command=lambda:save_new_student(
 ))
 button.grid(row=5, column=1, sticky=W+E)
 
+display_students()
 root.mainloop()
-
-
-host = "localhost"
-user = "postgres"
-password = "postnew"
-database = "tareas"
-port = 5432
-
-cur = None
-# Crea un objeto de conexión a la base de datos
-try:
-    connection = psycopg2.connect(
-    host = host,
-    user = user,
-    password = password,
-    database = database,
-    port = port
-    )
-
-    cur = connection.cursor()
-    
-    cur.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id SERIAL PRIMARY KEY,
-                    name VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) NOT NULL,
-                    password VARCHAR(255) NOT NULL
-                )
-                """)
-
-    new_user = ("maria torres", "maria1@gmail.com", "mar321")
-    insert_query = "INSERT INTO users(name, email, password) VALUES (%s, %s, %s) RETURNING id, name, email"
-    cur.execute(insert_query, new_user)
-    user = cur.fetchone()
-    connection.commit()
-    print(user)
-    
-except Exception as error:
-    print(f'Error: {error}')
-finally:
-    if cur is not None:
-        cur.close()
-    if connection is not None:
-        connection.close()
-
-# Ejecuta una consulta SQL
 
 
 
